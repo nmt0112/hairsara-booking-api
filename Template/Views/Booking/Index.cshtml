@@ -1,0 +1,548 @@
+﻿@{
+    ViewBag.Title = "Đặt Lịch";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .gio-container {
+        max-height: 200px; /* Đặt chiều cao tối đa cho khung, có thể điều chỉnh theo ý muốn */
+        overflow-y: auto; /* Cho phép cuộn chuột khi nội dung vượt quá kích thước */
+    }
+
+    .gio-button {
+        width: 48%;
+        margin-bottom: 10px;
+    }
+        /* CSS trong file của bạn hoặc thêm trực tiếp vào mã HTML */
+        .gio-button[disabled] {
+            background-color: #ccc; /* Thay đổi màu nền khi bị disable */
+            color: #666; /* Thay đổi màu chữ khi bị disable */
+        }
+
+        .gio-button.selected {
+            background-color: #007bff; /* Màu nền khi được chọn */
+            color: #fff; /* Màu chữ khi được chọn */
+        }
+
+</style>
+<link href="/templest/css/booking.css" rel="stylesheet" />
+
+<div class="site-section">
+    <div class="slide-one-item home-slider owl-carousel">
+        <div class="site-blocks-cover inner-page-cover" style="background-image: url('/templest/images/hero_bg_2.jpg'); " data-aos="fade" data-stellar-background-ratio="0.5">
+            <div class="container">
+                <div class="row align-items-center justify-content-center text-center">
+                    <div class="col-md-8" data-aos="fade-up" data-aos-delay="400">
+                        <h2 class="text-white font-weight-light mb-2 display-1">Đặt Lịch Ngay</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container" style="margin-top: 50px">
+        <div class="row">
+            <div class="col-md-7 mb-5">
+                <h2 class="mb-4 site-section-heading">Đặt Lịch</h2>
+                <form id="bookingForm">
+                    <div class="step-container">
+                        <div>
+                            <h2>Chọn Chi Nhánh</h2>
+                            <div>
+                                <label for="Styles">Chọn Vị Trí:</label>
+                                <select id="ViTri" name="ViTri">
+                                    <option value="">-= Vui lòng chọn khu vực =-</option>
+                                </select>
+                            </div>
+                            <!-- Chọn Chi Nhánh -->
+                            <div id="ChiNhanhContainer" style="display: none;">
+                                <label for="Styles">Chọn Chi Nhánh:</label>
+                                <select id="ChiNhanh" name="ChiNhanh">
+                                    <option value="">-= Vui lòng chọn chi nhánh =-</option>
+                                </select>
+                            </div>                           
+                            <div id="DanhMucContainer" style="display: none;">
+                                <h2>Chọn Dịch Vụ</h2>
+                                <label for="Styles">Chọn Danh Mục:</label>
+                                <select id="DanhMuc" name="DanhMuc"></select>
+                            </div>
+                            <!-- Chọn Dịch Vụ -->
+                            <div id="DichVuContainer" style="display: none;">
+                                <label for="Styles">Chọn Dịch Vụ:</label>
+                                <select id="DichVu" name="DichVu"></select>
+                            </div>
+                            <!-- Chọn Barber -->                           
+                            <div id="ChonBarberContainer" style="display: none;">
+                                <h2>Chọn Barber</h2>
+                                <label for="Barber">Chọn Barber:</label>
+                                <select id="Barber" name="Barber"></select>
+                            </div>
+
+                            <!-- Chọn Ngày, Giờ -->                           
+                            <div id="ChonNgayGioContainer" style="display: none;">
+                                <h2>Chọn Ngày, Giờ</h2>
+                                <div>
+                                    <label for="Styles">Chọn Ngày:</label>
+                                    <select id="Ngay" name="Ngay"></select>
+                                </div>
+                                <div>
+                                    <label for="Styles">Chọn Giờ:</label>
+                                    <div id="GioContainer" class="gio-container perfect-scrollbar">
+                                        <!-- Các button thời gian sẽ được thêm vào đây -->
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div style="margin-top: 20px">
+                            <input type="submit" id="hoanThanhBtn" value="Hoàn Thành" />
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="p-4 mb-3 bg-white">
+                <p class="mb-0 font-weight-bold">Địa chỉ</p>
+                <p class="mb-4">1234 Quận 9, Thủ Đức</p>
+
+                <p class="mb-0 font-weight-bold">Điện thoại</p>
+                <p class="mb-4"><a href="#">+84 1648 269 168</a></p>
+
+                <p class="mb-0 font-weight-bold">Địa chỉ Email</p>
+                <p class="mb-0"><a href="#">hutech@email.com</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal -->
+<div id="confirmationModal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Xác Nhận Thông Tin</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Display user-selected information here -->
+                <p id="confirmationInfo"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Trở Lại</button>
+                <button type="button" class="btn btn-primary" id="confirmAppointmentBtn">Hoàn Thành</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/perfect-scrollbar/css/perfect-scrollbar.css" />
+<script src="https://unpkg.com/perfect-scrollbar/dist/perfect-scrollbar.min.js"></script>
+
+<script>
+    
+    $(document).ready(function () {  
+        var chinhanhContainer = $('#ChiNhanhContainer');
+        var dichvuContainer = $('#DichVuContainer');
+        var danhmucContainer = $('#DanhMucContainer');
+        var barberContainer = $('#ChonBarberContainer');
+        var ngayGioContainer = $('#ChonNgayGioContainer');
+        var barberdropdown = $('#Barber');
+        var ngayDropdown = $('#Ngay');
+        var gioContainer = $('#GioContainer');
+     
+        // Gọi API để load danh sách ViTri
+        $.ajax({
+            url: '/Booking/GetViTris',
+            type: 'GET',
+            success: function (data) {
+                var vitridropdown = $('#ViTri');
+                $.each(data, function (index, vitri) {
+                    vitridropdown.append($('<option>', {
+                        value: vitri.id,
+                        text: vitri.tinhThanhPho
+                    }));
+                });
+
+                // Sự kiện khi dropdown "ViTri" thay đổi
+                vitridropdown.on('change', function () {
+                    var selectedViTri = $(this).val();
+
+                    // Ẩn hoặc hiển thị dropdown "ChiNhanh" tùy thuộc vào việc có vị trí được chọn hay không
+                    if (selectedViTri) {
+                        chinhanhContainer.show();
+                        loadChiNhanhByViTri(selectedViTri);         
+                    } else {
+                        chinhanhContainer.hide();                                            }
+                });
+            },
+            error: function () {
+                console.error('Failed to load Vi Tri data.');
+            }
+        });
+
+        function loadChiNhanhByViTri(idViTri) {
+            $.ajax({
+                url: `/Booking/GetChiNhanhsByViTri?idViTri=${idViTri}`,
+                type: 'GET',
+                success: function (data) {
+                    var chinhanhdropdown = $('#ChiNhanh');
+                    chinhanhdropdown.empty();
+                    chinhanhdropdown.append($('<option>', {
+                        value: '',
+                        text: '-= Vui lòng chọn chi nhánh =-'
+                    }));
+                    $.each(data, function (index, chinhanh) {
+                        chinhanhdropdown.append($('<option>', {
+                            value: chinhanh.id,
+                            text: chinhanh.tenChiNhanh
+                        }));
+                    });
+
+                    chinhanhdropdown.on('change', function () {
+                        var selectedChiNhanh = $(this).val();
+                        // Ẩn hoặc hiển thị dropdown "ChiNhanh" tùy thuộc vào việc có vị trí được chọn hay không
+                        if (selectedChiNhanh) {
+                            danhmucContainer.show();
+                            loadDanhMuc();
+                            // Cập nhật danh sách Barber và đặt lại giá trị mặc định
+                            loadBarbersByChiNhanh(selectedChiNhanh);
+                            barberContainer.show();
+                            barberdropdown.val(''); // Đặt lại giá trị mặc định cho dropdown Barber
+                        } else {
+                            danhmucContainer.hide();
+                            dichvuContainer.hide();
+                            barberContainer.hide();
+                            ngayGioContainer.hide();
+                        }
+                    });
+                },
+                error: function () {
+                    console.error('Failed to load Chi Nhanh data.');
+                }
+            });
+        }
+        // Hàm để load danh sách Chi Nhanh theo ViTri
+        function loadDanhMuc() {
+            $.ajax({
+                url: '/Booking/GetDanhMucs',
+                type: 'GET',
+                success: function (data) {
+                    var danhmucdropdown = $('#DanhMuc');
+                    danhmucdropdown.empty();
+                    danhmucdropdown.append($('<option>', {
+                        value: '',
+                        text: '-= Vui lòng chọn Danh Mục =-'
+                    }));
+                    $.each(data, function (index, danhmuc) {
+                        danhmucdropdown.append($('<option>', {
+                            value: danhmuc.id,
+                            text: danhmuc.tenDanhMuc
+                        }));
+                    });
+                    // Sự kiện khi dropdown "DanhMuc" thay đổi
+                    danhmucdropdown.on('change', function () {
+                        var selectedDanhMuc = $(this).val();
+                        if (selectedDanhMuc) {
+                            dichvuContainer.show();
+                            loadDichVuByDanhMuc(selectedDanhMuc);
+                        } else {
+                            
+                            dichvuContainer.hide();
+                        }
+                    });
+                },
+                error: function () {
+                    console.error('Failed to load Danh Muc data.');
+                }
+            });
+        }
+        //////////////////////////////////////////////////////////////////////////    
+        function loadDichVuByDanhMuc(idDanhMuc) {
+            $.ajax({
+                url: `/Booking/GetDichVusByDanhMuc?idDanhMuc=${idDanhMuc}`,
+                type: 'GET',
+                success: function (data) {
+                    var dicvudropdown = $('#DichVu');
+                    dicvudropdown.empty();
+                    dicvudropdown.append($('<option>', {
+                        value: '',
+                        text: '-= Vui lòng chọn dịch vụ =-'
+                    }));
+                    $.each(data, function (index, dichvu) {
+                        dicvudropdown.append($('<option>', {
+                            value: dichvu.id,
+                            text: dichvu.tenDichVu
+                        }));
+                    });
+                    dicvudropdown.on('change', function () {
+                        var selectedChiNhanh = $('#ChiNhanh').val();
+                        // Ẩn hoặc hiển thị dropdown "ChiNhanh" tùy thuộc vào việc có vị trí được chọn hay không
+                        if (selectedChiNhanh) {
+                            barberContainer.show();
+                            // Pass selectedChiNhanh instead of idChiNhanh
+                            loadBarbersByChiNhanh(selectedChiNhanh);
+                        } else {
+                            barberContainer.hide();
+                        }
+                    });
+
+                },
+                error: function () {
+                    console.error('Failed to load Dịch Vụ data.');
+                }
+            });
+        }
+        function loadBarbersByChiNhanh(idChiNhanh) {
+            $.ajax({
+                url: `/Booking/GetBarbersByChiNhanh?IdChiNhanhWork=${idChiNhanh}`,
+                type: 'GET',
+                success: function (data) {
+                    barberdropdown.empty();
+                    barberdropdown.append($('<option>', {
+                        value: '',
+                        text: '-= Vui lòng chọn barber =-'
+                    }));
+                    $.each(data, function (index, barber) {
+                        barberdropdown.append($('<option>', {
+                            value: barber.id,
+                            text: barber.nameBarber
+                        }));
+                    });
+                    barberdropdown.on('change', function () {
+                        var selectedBarber = $(this).val();
+                        if (selectedBarber) {
+                            ngayGioContainer.show();
+                            loadNgay();
+                        } else {
+                            ngayGioContainer.hide();
+                        }
+                    });
+                },
+                error: function () {
+                    console.error('Failed to load Barber data.');
+                }
+            });
+        }
+
+        function loadNgay() {
+            var today = moment();
+            ngayDropdown.empty();
+            ngayDropdown.append($('<option>', {
+                value: '',
+                text: '-= Vui lòng chọn Ngày Hẹn =-'
+            }));
+            for (var i = 0; i < 7; i++) {
+                var date = today.clone().add(i, 'days');
+                var dayOfWeek = date.day();
+
+                var optionText;
+                if (dayOfWeek === 0) {
+                    optionText = 'CN, ' + date.format('DD/MM/YYYY');
+                } else {
+                    optionText = 'T' + (dayOfWeek + 1) + ', ' + date.format('DD/MM/YYYY');
+                }
+
+                ngayDropdown.append($('<option>', {
+                    value: date.format('YYYY-MM-DD'),
+                    text: optionText
+                }));
+            }
+            ngayDropdown.on('change', function () {
+                // Check if a date is selected
+                var selectedDate = $(this).val();
+                if (selectedDate) {
+                    // Show the GioContainer when a date is selected
+                    gioContainer.show();
+                    loadGio();
+                } else {
+                    // Hide the GioContainer if no date is selected
+                    gioContainer.hide();
+                }
+            });
+
+        }
+
+        function loadGio() {
+            // Clear existing buttons in GioContainer
+            gioContainer.empty();
+            var selectedBarber = $('#Barber').val();
+            var selectedChiNhanh = $('#ChiNhanh').val();
+            var selectedDate = moment($('#Ngay').val()); // Lấy ngày đã chọn
+            var currentTime = moment(); // Thời gian hiện tại
+
+            // Add time buttons from 8 AM to 10 PM with 30-minute intervals
+            for (var hour = 8; hour <= 22; hour++) {
+                for (var minute = 0; minute < 60; minute += 30) {
+                    var time = moment().set({ hour: hour, minute: minute });
+
+                    // Kiểm tra xem mốc giờ đã trôi qua hay chưa
+                    var isPastTime = time.isBefore(currentTime);
+
+                    // Kiểm tra xem ngày đã chọn là ngày hiện tại hay không
+                    var isToday = selectedDate.isSame(currentTime, 'day');
+
+                    // Disable button nếu là ngày hiện tại và đã trôi qua
+                    var isDisabled = isToday && isPastTime;
+
+                    var button = $('<button>', {
+                        class: 'btn btn-outline-primary gio-button',
+                        text: time.format('HH:mm'),
+                        'data-gio': time.format('HH:mm'),
+                        disabled: isDisabled
+                    });
+                    gioContainer.append(button);
+                }
+            }
+
+
+            // Gọi API để lấy danh sách các mốc giờ đã được đặt trước
+            $.ajax({
+                url: `https://localhost:7271/Booking/GetByBarberChiNhanh?idBarber=${selectedBarber}&idChiNhanh=${selectedChiNhanh}`,
+                type: 'GET',
+                success: function (bookings) {
+                    // Duyệt qua danh sách các mốc giờ đã được đặt
+                    bookings.forEach(function (booking) {
+                        // Lấy thời gian bắt đầu của booking và chuyển đổi sang định dạng Moment
+                        var bookedTime = moment(booking.thoiGianBatDau);
+
+                        // Kiểm tra nếu booking thuộc ngày đã chọn
+                        if (bookedTime.isSame(selectedDate, 'day')) {
+                            // Tìm mốc giờ tương ứng trong DOM và disable nó
+                            var gioButton = gioContainer.find(`button[data-gio="${bookedTime.format('HH:mm')}"]`);
+                            gioButton.prop('disabled', true);
+                            gioButton.addClass('booked');
+                        }
+                    });
+                },
+                error: function () {
+                    console.error('Failed to load booked time data.');
+                }
+            });
+            // Initialize PerfectScrollbar for the time container
+            document.addEventListener('DOMContentLoaded', function () {
+                new PerfectScrollbar(gioContainer[0]);
+            });
+          
+            // Handle time button clicks
+            gioContainer.off('click', 'button').on('click', 'button', function (e) {
+                e.preventDefault();
+                var selectedTime = $(this).data('gio');
+
+                // Remove selected class from all buttons
+                gioContainer.find('button').removeClass('selected');
+
+                // Add selected class to the clicked button
+                $(this).addClass('selected');
+            });
+        }
+
+
+        $('#hoanThanhBtn').click(function (e) {
+            e.preventDefault();
+            console.log('Hoàn Thành button clicked');
+
+            // Lấy giá trị từ giao diện
+            var selectedNgay = $('#Ngay').val();
+            var selectedGio = $('#GioContainer button.selected').data('gio');
+            var selectedChiNhanh = $('#ChiNhanh').val();
+            var selectedDichVu = $('#DichVu').val();
+            var selectedBarber = $('#Barber').val();
+
+            // Fetch additional information based on the selected IDs
+            $.when(
+                $.ajax({
+                    url: `https://localhost:7271/ChiNhanh/ChiNhanh${selectedChiNhanh}`,
+                    type: 'GET',
+                    dataType: 'json'
+                }),
+                $.ajax({
+                    url: `https://localhost:7271/DichVu/DichVu${selectedDichVu}`,
+                    type: 'GET',
+                        dataType: 'json'
+                }),
+                $.ajax({
+                    url: `https://localhost:7271/Barber/BarberId?id=${selectedBarber}`,
+                    type: 'GET',
+                    dataType: 'json'
+                })
+            ).done(function (chiNhanhInfo, dichVuInfo, barberInfo) {
+                var formattedNgay = moment(selectedNgay).format('DD-MM-YYYY');
+                var chiNhanhName = chiNhanhInfo[0].tenChiNhanh;
+                var diachiChiNhanh = chiNhanhInfo[0].diaChi;
+                var dichVuName = dichVuInfo[0].tenDichVu;
+                var barberName = barberInfo[0].nameBarber;
+                // Build the confirmation message with the fetched information
+                var confirmationMessage = `
+                            <strong>Thông tin đặt lịch:</strong><br>
+                        Chi Nhánh: ${chiNhanhName}<br>
+                        Địa Chỉ: ${diachiChiNhanh}<br>
+                        Ngày Hẹn: ${formattedNgay}<br>
+                        Giờ: ${selectedGio}<br>
+                        Dịch Vụ: ${dichVuName}<br>
+                        Barber: ${barberName}<br>`;
+
+                // Display the confirmation information in the modal
+                $('#confirmationInfo').html(confirmationMessage);
+
+                // Show the modal
+                $('#confirmationModal').modal('show');
+            });
+        });
+
+        // Handle Confirm Appointment button in the modal
+        $('#confirmAppointmentBtn').click(function () {
+            var apiEndpoint; // Di chuyển định nghĩa ra khỏi hàm success
+
+            // Step 1: Get customerId
+            $.ajax({
+                url: '/Booking/GetCustomerId',
+                type: 'GET',
+                success: function (response) {
+                    console.log(response); // Kiểm tra giá trị trả về từ AJAX request
+                    var idCustomer = response.customerId;
+                    if (idCustomer === undefined) {
+                        console.error("idCustomer is undefined. Check the AJAX request for /Booking/GetCustomerId.");
+                        return;
+                    }
+
+                    var idChiNhanh = $('#ChiNhanh').val();
+                    var idBarber = $('#Barber').val();
+                    var idDichVu = $('#DichVu').val();
+                    apiEndpoint = `https://localhost:7271/Booking/DatLich?idCustomer=${idCustomer}&idChiNhanh=${idChiNhanh}&idBarber=${idBarber}&idDichVu=${idDichVu}`;
+
+                    // Step 2: Close the modal
+                    $('#confirmationModal').modal('hide');
+                    // Lấy giá trị Ngay và Gio từ giao diện
+                    var selectedNgay = $('#Ngay').val();
+                    var selectedGio = $('#GioContainer button.selected').data('gio');
+                    var thoiGianBatDau = selectedNgay + 'T' + selectedGio;
+
+                    var data = {
+                        thoiGianBatDau: thoiGianBatDau
+                    };
+
+                    // Step 3: Perform your AJAX request to save the appointment
+                    $.ajax({
+                        url: apiEndpoint, // Sử dụng apiEndpoint ở đây
+                        type: 'POST',
+                        contentType: 'application/json',
+                        data: JSON.stringify(data),
+                        success: function (response) {
+                            alert('Đặt lịch thành công!');
+                            window.location.href = '/Home/Booking';
+                        },
+                        error: function (error) {
+                            // Xử lý khi đặt lịch thất bại
+                            console.error(error);
+                        }
+                    });
+                },
+                error: function (error) {
+                    console.error(error);
+                }
+            });
+        });
+
+    });
+
+</script>

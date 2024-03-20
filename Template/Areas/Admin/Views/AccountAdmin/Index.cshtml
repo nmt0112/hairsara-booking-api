@@ -1,0 +1,76 @@
+﻿@model List<Storage.Models.UserWithRoles>
+
+<div class="page-inner">
+    <div class="page-header">
+        <h4 class="page-title">Quản Lý Tài Khoản</h4>
+        <ul class="breadcrumbs">
+            <li class="nav-home">
+                <a href="/Admin/HomeAdmin/Index">
+                    <i class="flaticon-home"></i>
+                </a>
+            </li>
+            <li class="separator">
+                <i class="flaticon-right-arrow"></i>
+            </li>
+            <li class="nav-item">
+                <a href="#">Tài Khoản</a>
+            </li>
+        </ul>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table id="add-row" class="display table table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Mã Tài Khoản</th>
+                                    <th>Tên đăng nhập</th>
+                                    <th>Email liên lạc</th>
+                                    <th>Loại tài khoản</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr data-barbers-id="@item.User.Id">
+                                        <td>@Html.DisplayFor(modelItem => item.User.Id)</td>
+                                        <td>@Html.DisplayFor(modelItem => item.User.UserName)</td>
+                                        <td>@Html.DisplayFor(modelItem => item.User.Email)</td>
+                                        <td>
+                                            @foreach (var role in item.Roles)
+                                            {
+                                                <span>@role</span>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        $('#add-row').DataTable();
+        $(document).ready(function () {
+            $('#addRowButton').click(function () {
+                $('#add-row').dataTable().fnAddData([
+                    $("#addName").val(),
+                    $("#addPosition").val(),
+                    $("#addOffice").val(),
+                    action
+                ]);
+                $('#addRowModal').modal('hide');
+
+            });
+        });
+    </script>
+}
+
+

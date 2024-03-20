@@ -1,0 +1,220 @@
+﻿@model List<Storage.Models.Booking>
+@{
+    ViewBag.Title = "Đặt Lịch";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    /* Style cho table */
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+
+    /* Style cho các phần tử th */
+    th {
+        background-color: #f2f2f2;
+        color: #333;
+        padding: 10px;
+        text-align: left;
+    }
+
+    /* Style cho các phần tử td */
+    td {
+        border: 1px solid #ddd;
+        padding: 10px;
+        text-align: left;
+    }
+
+    /* Style cho hàng chẵn của table */
+    tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+    /* Style cho hover trên mỗi dòng của table */
+    tr:hover {
+        background-color: #e5f8ff;
+    }
+
+    /* Style cho tab */
+    .tab {
+        overflow: hidden;
+        border: 1px solid #ccc;
+        background-color: #f1f1f1;
+    }
+
+        /* Link trong tab */
+        .tab button {
+            background-color: inherit;
+            float: left;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 14px 16px;
+            transition: 0.3s;
+        }
+
+            /* Change background color of buttons on hover */
+            .tab button:hover {
+                background-color: #ddd;
+            }
+
+            /* Create an active/current tablink class */
+            .tab button.active {
+                background-color: #ccc;
+            }
+
+    /* Style cho nội dung của tab */
+    .tabcontent {
+        display: none;
+        padding: 6px 12px;
+        border: 1px solid #ccc;
+        border-top: none;
+    }
+</style>
+
+<div class="site-section">
+    <div class="container" style="margin-top: 50px">
+        <h2 class="mb-4 site-section-heading">Lịch Hẹn</h2>
+
+        <!-- Tab buttons -->
+        <div class="tab">
+            <button class="tablinks" onclick="openTab(event, 'pending')" id="defaultOpen">Chờ xác nhận</button>
+            <button class="tablinks" onclick="openTab(event, 'confirmed')">Đã xác nhận</button>          
+        </div>
+        <!-- Tab content for pending bookings -->
+        <div id="pending" class="tabcontent">
+            @if (Model != null && Model.Any())
+            {
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Tên Người Dùng</th>
+                            <th>Tên Chi Nhánh</th>
+                            <th>Tên Barber</th>
+                            <th>Tên Dịch Vụ</th>
+                            <th>Ngày Hẹn</th>
+                            <th>Giờ Hẹn</th>
+                            <th>Trạng Thái</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Where(m => !m.TrangThai))
+                        {
+                            <tr>
+                                <td>@Html.DisplayFor(modelItem => item.Customer.NameCustomer)</td>
+                                <td>@Html.DisplayFor(modelItem => item.ChiNhanh.TenChiNhanh)</td>
+                                <td>@Html.DisplayFor(modelItem => item.Barber.NameBarber)</td>
+                                <td>@Html.DisplayFor(modelItem => item.DichVu.TenDichVu)</td>
+                                <!-- Trường hiển thị ngày -->
+                                <td>
+                                    @{
+                                        if (item.ThoiGianBatDau is DateTime startDate)
+                                        {
+                                            @startDate.ToString("dd/MM/yyyy")
+                                        }
+                                    }
+                                </td>
+
+                                <!-- Trường hiển thị giờ -->
+                                <td>
+                                    @{
+                                        if (item.ThoiGianBatDau is DateTime startTime)
+                                        {
+                                            @startTime.ToString("HH:mm")
+                                        }
+                                    }
+                                </td>
+
+                                <td>
+                                    <span>@(item.TrangThai ? "Đã xác nhận" : "Chờ xác nhận")</span>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <p>Không có lịch hẹn chờ xác nhận nào.</p>
+            }
+        </div>
+        <!-- Tab content for confirmed bookings -->
+        <div id="confirmed" class="tabcontent">
+            @if (Model != null && Model.Any())
+            {
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Tên Người Dùng</th>
+                            <th>Tên Chi Nhánh</th>
+                            <th>Tên Barber</th>
+                            <th>Tên Dịch Vụ</th>
+                            <th>Ngày Hẹn</th>
+                            <th>Giờ Hẹn</th>
+                            <th>Trạng Thái</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model.Where(m => m.TrangThai))
+                        {
+                            <tr>
+                                <td>@Html.DisplayFor(modelItem => item.Customer.NameCustomer)</td>
+                                <td>@Html.DisplayFor(modelItem => item.ChiNhanh.TenChiNhanh)</td>
+                                <td>@Html.DisplayFor(modelItem => item.Barber.NameBarber)</td>
+                                <td>@Html.DisplayFor(modelItem => item.DichVu.TenDichVu)</td>
+                                <!-- Trường hiển thị ngày -->
+                                <td>
+                                    @{
+                                        if (item.ThoiGianBatDau is DateTime startDate)
+                                        {
+                                            @startDate.ToString("dd/MM/yyyy")
+                                        }
+                                    }
+                                </td>
+
+                                <!-- Trường hiển thị giờ -->
+                                <td>
+                                    @{
+                                        if (item.ThoiGianBatDau is DateTime startTime)
+                                        {
+                                            @startTime.ToString("HH:mm")
+                                        }
+                                    }
+                                </td>
+
+                                <td>
+                                    <span>@(item.TrangThai ? "Đã xác nhận" : "Chờ xác nhận")</span>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <p>Không có lịch hẹn đã xác nhận nào.</p>
+            }
+        </div>      
+        <!-- JavaScript để xử lý tab -->
+        <script>
+            function openTab(evt, tabName) {
+                var i, tabcontent, tablinks;
+                tabcontent = document.getElementsByClassName("tabcontent");
+                for (i = 0; i < tabcontent.length; i++) {
+                    tabcontent[i].style.display = "none";
+                }
+                tablinks = document.getElementsByClassName("tablinks");
+                for (i = 0; i < tablinks.length; i++) {
+                    tablinks[i].className = tablinks[i].className.replace(" active", "");
+                }
+                document.getElementById(tabName).style.display = "block";
+                evt.currentTarget.className += " active";
+            }
+
+            // Mở tab mặc định khi trang được tải
+            document.getElementById("defaultOpen").click();
+        </script>
+    </div>
+</div>

@@ -1,0 +1,251 @@
+﻿@model IEnumerable<Storage.Models.DanhMuc>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/Admin_Layout.cshtml";
+}
+
+<div class="page-inner">
+    <div class="page-header">
+        <h4 class="page-title">Quản Lý Danh Mục Dịch Vụ</h4>
+        <ul class="breadcrumbs">
+            <li class="nav-home">
+                <a href="/Admin/HomeAdmin/Index">
+                    <i class="flaticon-home"></i>
+                </a>
+            </li>
+            <li class="separator">
+                <i class="flaticon-right-arrow"></i>
+            </li>
+            <li class="nav-item">
+                <a href="/Admin/DanhMucAdmin/Index">Danh Mục Dịch Vụ</a>
+            </li>
+        </ul>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="d-flex align-items-center">
+                        <h4 class="card-title">Thêm Danh Mục Dịch Vụ</h4>
+                        <button class="btn btn-primary btn-round ml-auto" data-toggle="modal" data-target="#addRowModal">
+                            <i class="fa fa-plus"></i>
+                            Thêm Mới
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <!-- Modal -->
+                    <div class="modal fade" id="addRowModal" tabindex="-1" role="dialog" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header no-bd">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <p class="small">Nhập Thông Tin Cho Danh Mục</p>
+                                    <form id="addForm">
+                                        <div class="form-group">
+                                            <input class="form-control my-3 p-2" data-val="true"
+                                                   data-val-required="The Danh Muc field is required." id="TenDanhMuc" name="TenDanhMuc" type="text" placeholder="Tên Danh Mục">
+                                        </div>
+                                        <div class="form-group">
+                                            <input class="form-control my-3 p-2" data-val="true"
+                                                   data-val-required="The Mo Ta Danh Muc field is required." id="MoTaDanhMuc" name="MoTaDanhMuc" type="text" placeholder="Mô Tả Danh Mục">
+                                        </div>
+                                        <input type="submit" class="btn btn-primary w-100" value="Thêm Khu Vực" />
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table id="add-row" class="display table table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th>STT</th>
+                                    <th>Tên Danh Mục</th>
+                                    <th>Mô Tả Danh Mục</th>
+                                    <th style="width: 10%">Hành Động</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+
+                                    <tr data-barbers-id="@item.Id">
+                                        <td>@Html.DisplayFor(modelItem => item.Id)</td>
+                                        <td>@Html.DisplayFor(modelItem => item.TenDanhMuc)</td>
+                                        <td>@Html.DisplayFor(modelItem => item.MoTaDanhMuc)</td>
+                                        <td>
+                                            <div class="form-button-action">
+                                                <button type="button" class="btn btn-link btn-primary btn-lg btn-edit" data-toggle="modal" data-target="#editPopup_@item.Id" data-toggle="tooltip" title="Edit Task">
+                                                    <i class="fa fa-edit"></i>
+                                                </button>
+                                                <button type="button" class="btn btn-link btn-danger btn-lg btn-delete" data-toggle="modal" data-target="#deletePopup_@item.Id" data-toggle="tooltip" title="Remove">
+                                                    <i class="fa fa-times"></i>
+                                                </button>
+                                            </div>
+                                            <!-- Popup Chỉnh sửa -->
+                                            <div id="editPopup_@item.Id" class="modal fade" tabindex="-1" role="dialog">
+                                                <div class="modal-dialog" role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <!-- Nội dung của trang Edit -->
+                                                            <p class="small">Nhập Thông Tin Thay đổi Cho Danh Mục</p>
+                                                            <div class="form-group">
+                                                                <input class="form-control my-3 p-2" data-val="true"
+                                                                       data-val-required="The Danh Muc field is required." id="TenDanhMucEdit_@item.Id" name="TenDanhmucEdit" type="text" placeholder="Tên Danh Mục" value="@item.TenDanhMuc">
+                                                            </div>
+                                                            <div class="form-group">
+                                                                <input class="form-control my-3 p-2" data-val="true"
+                                                                       data-val-required="The Mo Ta field is required." id="MoTaEdit_@item.Id" name="MoTaEdit" type="text" placeholder="Mô Tả Danh Mục" value="@item.MoTaDanhMuc">
+                                                            </div>
+                                                            <button type="button" class="btn btn-primary w-100" onclick="updateItem('@item.Id')">Hoàn tất</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Popup Xóa -->
+                                            <div id="deletePopup_@item.Id" class="modal fade" tabindex="-1" role="dialog">
+                                                <div class="modal-dialog" role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true">&times;</span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <!-- Display information about the item to be deleted -->
+                                                            <p>Are you sure you want to delete the @item.TenDanhMuc?</p>
+
+                                                            <!-- Delete button -->
+                                                            <button type="button" class="btn btn-danger" onclick="deleteItem(@item.Id)">Delete</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+
+                                        </td>
+                                    </tr>
+
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        $('#add-row').DataTable();
+        $(document).ready(function () {
+            $('#addRowButton').click(function () {
+                $('#add-row').dataTable().fnAddData([
+                    $("#addName").val(),
+                    $("#addPosition").val(),
+                    $("#addOffice").val(),
+                    action
+                ]);
+                $('#addRowModal').modal('hide');
+
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            $('#addForm').submit(function (e) {
+                e.preventDefault();
+                const token = sessionStorage.getItem('token');
+                var apiUrl = 'https://localhost:7271/DanhMucAdmin/AddDanhMuc';
+
+                $.ajax({
+                    url: apiUrl,
+                    type: 'POST',
+                    contentType: 'application/json',
+                    headers: {
+                        'Authorization': 'Bearer ' + token,
+                    },
+                    data: JSON.stringify({
+                        TenDanhMuc: $('#TenDanhMuc').val(),
+                        MoTaDanhMuc: $('#MoTaDanhMuc').val()
+                    }),
+                    success: function (data) {
+                        // Xử lý thành công, ví dụ: chuyển hướng hoặc hiển thị thông báo
+                        window.location.href = '/Admin/DanhMucAdmin/Index';
+                    },
+                    error: function (error) {
+                        // Xử lý lỗi, hiển thị thông báo hoặc log lỗi
+                        console.error('Registration failed:', error);
+                        alert('Registration failed. Please try again.');
+                    }
+                });
+            });
+        });
+    </script>
+    <script>
+        function deleteItem(itemId) {
+            const token = sessionStorage.getItem('token');
+            var apiUrl = 'https://localhost:7271/DanhMucAdmin/DeleteDanhMuc' + itemId; // Add a slash before the item ID
+
+            $.ajax({
+                url: apiUrl,
+                type: 'DELETE',
+                headers: {
+                    'Authorization': 'Bearer ' + token,
+                },
+                success: function (data) {
+                    // Handle success, for example, refresh the page
+                    window.location.reload();
+                },
+                error: function (error) {
+                    // Handle error, display an alert or log the error
+                    console.error('Deletion failed:', error);
+                    alert('Deletion failed. Please try again.');
+                }
+            });
+        }
+
+    </script>
+    <script>
+        function updateItem(itemId) {
+            const token = sessionStorage.getItem('token');
+            var apiUrl = 'https://localhost:7271/DanhMucAdmin/UpdateDanhMuc' + itemId;
+
+            $.ajax({
+                url: apiUrl,
+                type: 'PUT', // Assuming your update endpoint uses the PUT method
+                headers: {
+                    'Authorization': 'Bearer ' + token,
+                    'Content-Type': 'application/json',
+                },
+                data: JSON.stringify({
+                    TenDanhMuc: $('#TenDanhMucEdit_' + itemId).val(),
+                    MoTaDanhMuc: $('#MoTaEdit_' + itemId).val(),
+                }),
+                success: function (data) {
+                    // Handle success, for example, refresh the page
+                    window.location.reload();
+                },
+                error: function (error) {
+                    // Handle error, display an alert or log the error
+                    console.error('Update failed:', error);
+                    alert('Update failed. Please try again.');
+                }
+            });
+        }
+    </script>
+}

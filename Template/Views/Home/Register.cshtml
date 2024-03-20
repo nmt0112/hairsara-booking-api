@@ -1,0 +1,50 @@
+﻿@using Storage.Models.Authentication.SignUp
+@model RegisterUser
+@{
+    ViewBag.Title = "Register";
+}
+<div class="row body-content w-100">
+    <div class="col-md-6 d-flex justify-content-center bg-info h-100" style="margin-top: 100px">
+        <img src="~/templest/images/login_banner.svg" width="1000px" alt="">
+    </div>
+
+    <div class="col-md-6 p-5 mt-5" style="left: 100px">
+        <div class="text-center" style="max-width: 550px;">
+            <h4 style="margin-top: 100px">Hair - Đăng ký</h4>
+            <p>Xin chào, vui lòng nhập thông tin đăng ký</p>
+            <hr />
+            <form action="/home/register" method="post">
+                <input class="form-control my-3 p-2" data-val="true"
+                       data-val-required="The UserName field is required." id="UserName" name="UserName" type="text" placeholder="Tên đăng nhập">
+                <input class="form-control my-3 p-2" data-val="true"
+                       data-val-required="The Password field is required." id="Email" name="Email" type="text" placeholder="Email">
+                <input class="form-control my-3 p-2" data-val="true"
+                       data-val-required="The Password field is required." id="Password" name="Password" type="password" placeholder="Mật khẩu">           
+                <p style="color: #ccc;">
+                    Nhấn vào nút "Đăng ký", đồng nghĩa với việc bạn đồng ý với <a href="">Chính sách bảo mật</a> và <a href="">Các điều khoản dịch vụ</a> của Hair
+                </p>
+
+                <input type="submit" class="btn btn-primary w-100" value="Đăng Ký" />
+            </form>
+            <div class="mt-5">
+                <p style="color: #ccc;">Bạn đã có tài khoản Hair? <a href="/Home/Login">Đăng nhập</a></p>
+                <div class="mb-2">
+                    <a href="/Home/Index">Quay lại trang chủ</a>
+                </div>
+                <div class="row m-1">
+                    <div class="" style="cursor: pointer;">
+                        <span>
+                            <img src="~/templest/images/la-co-viet-nam.png" width="25" alt=""> Tiếng Việt
+                        </span>
+                    </div>
+
+                    <div class="ml-3" style="cursor: pointer;">
+                        <span>
+                            <img src="~/templest/images/co_my.png" width="25" alt=""> English
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

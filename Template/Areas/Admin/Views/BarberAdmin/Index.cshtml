@@ -1,0 +1,160 @@
+﻿@model IEnumerable<Storage.Models.Barber>
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<div class="page-inner">
+    <div class="page-header">
+        <h4 class="page-title">Quản Lý Thợ Cắt Tóc</h4>
+        <ul class="breadcrumbs">
+            <li class="nav-home">
+                <a href="/Admin/HomeAdmin/Index">
+                    <i class="flaticon-home"></i>
+                </a>
+            </li>
+            <li class="separator">
+                <i class="flaticon-right-arrow"></i>
+            </li>
+            <li class="nav-item">
+                <a href="/Admin/BarberAdmin/Index">Danh Sách Thợ Cắt Tóc</a>
+            </li>
+        </ul>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="d-flex align-items-center">
+                        <h4 class="card-title">Thêm Thợ Cắt Tóc</h4>
+                        <button class="btn btn-primary btn-round ml-auto" data-toggle="modal" data-target="#addRowModal">
+                            <i class="fa fa-plus"></i>
+                            Thêm Mới
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <!-- Modal -->
+                    <div class="modal fade" id="addRowModal" tabindex="-1" role="dialog" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header no-bd">
+                                    <h2 class="modal-title">
+                                        <span class="fw-mediumbold">
+                                            Thêm
+                                        </span>
+                                        <span class="fw-light">
+                                            Tài Khoản Người Dùng
+                                        </span>
+                                    </h2>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <p class="small">Nhập Thông Tin Cho Tài Khoản Cần Thêm</p>
+                                    <form id="registerForm">
+                                        <div class="form-group">
+                                            <input class="form-control my-3 p-2" data-val="true"
+                                                   data-val-required="The UserName field is required." id="UserName" name="UserName" type="text" placeholder="Tên đăng nhập">
+                                        </div>
+                                        <div class="form-group">
+                                            <input class="form-control my-3 p-2" data-val="true"
+                                                   data-val-required="The Email field is required." id="Email" name="Email" type="text" placeholder="Email">
+                                        </div>
+                                        <div class="form-group">
+                                            <input class="form-control my-3 p-2" data-val="true"
+                                                   data-val-required="The Password field is required." id="Password" name="Password" type="password" placeholder="Mật khẩu">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="chiNhanhId">Chọn Chi Nhánh</label>
+                                            <select class="form-control" id="chiNhanhId" name="chiNhanhId">
+                                                @foreach (var chiNhanh in ViewBag.ChiNhanhList)
+                                                {
+                                                    <option value="@chiNhanh.Id">@chiNhanh.TenChiNhanh</option>
+                                                }
+                                            </select>
+                                        </div>
+                                        <input type="submit" class="btn btn-primary w-100" value="Đăng Ký" />
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table id="add-row" class="display table table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th>STT</th>
+                                    <th>Tên Barber</th>
+                                    <th>Tên Chi Nhánh</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+
+                                    <tr data-barbers-id="@item.Id">
+                                        <td>@Html.DisplayFor(modelItem => item.Id)</td>
+                                        <td>@Html.DisplayFor(modelItem => item.NameBarber)</td>
+                                        <td>@Html.DisplayFor(modelItem => item.ChiNhanh.TenChiNhanh)</td>
+                                    </tr>
+
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        $('#add-row').DataTable();
+        $(document).ready(function () {
+            $('#addRowButton').click(function () {
+                $('#add-row').dataTable().fnAddData([
+                    $("#addName").val(),
+                    $("#addPosition").val(),
+                    $("#addOffice").val(),
+                    action
+                ]);
+                $('#addRowModal').modal('hide');
+
+            });
+        });
+    </script>
+    <script>
+        $(document).ready(function () {
+            $('#registerForm').submit(function (e) {
+                e.preventDefault();
+                const token = sessionStorage.getItem('token');
+                var chiNhanhId = $('#chiNhanhId').val();
+                var apiUrl = 'https://localhost:7271/Account/BarberAdmin/Register?chiNhanhId=' + chiNhanhId;
+
+                $.ajax({
+                    url: apiUrl,
+                    type: 'POST',
+                    contentType: 'application/json',
+                    headers: {
+                        'Authorization': 'Bearer ' + token,
+                    },
+                    data: JSON.stringify({
+                        UserName: $('#UserName').val(),
+                        Email: $('#Email').val(),
+                        Password: $('#Password').val()
+                    }),
+                    success: function (data) {
+                        // Xử lý thành công, ví dụ: chuyển hướng hoặc hiển thị thông báo
+                        window.location.href = '/Admin/BarberAdmin/Index';
+                    },
+                    error: function (error) {
+                        // Xử lý lỗi, hiển thị thông báo hoặc log lỗi
+                        console.error('Registration failed:', error);
+                        alert('Registration failed. Please try again.');
+                    }
+                });
+            });
+        });
+    </script>
+}
